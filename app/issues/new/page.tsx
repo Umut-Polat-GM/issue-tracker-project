@@ -47,7 +47,7 @@ const NewIssuePage = () => {
         </TextField.Root>
         {errors.title && (
           <Text color="red" as="p">
-            {errors.title.message}
+            {errors.title?.message}
           </Text>
         )}
         <Controller
