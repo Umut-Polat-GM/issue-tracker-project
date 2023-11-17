@@ -27,6 +27,17 @@ const NewIssuePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setLoading(true);
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+    } catch (err: any) {
+      setLoading(false);
+      setError(err.message);
+    }
+  });
+
   return (
     <div className="max-w-xl space-y-4">
       {error && (
@@ -34,19 +45,7 @@ const NewIssuePage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="space-y-4"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setLoading(true);
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-          } catch (err: any) {
-            setLoading(false);
-            setError(err.message);
-          }
-        })}
-      >
+      <form className="space-y-4" onSubmit={onSubmit}>
         <TextField.Root>
           <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
@@ -61,7 +60,9 @@ const NewIssuePage = () => {
 
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
-        <Button disabled={loading}>Submit New Issue {loading && <Spinner />}</Button>
+        <Button disabled={loading}>
+          Submit New Issue {loading && <Spinner />}
+        </Button>
       </form>
     </div>
   );
